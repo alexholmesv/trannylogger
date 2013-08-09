@@ -105,6 +105,8 @@ set :server_threads, "2"
 
 # Ready to go?
 
+### Don't forget to execute bundle install inside the cap directory.
+
 Now, we need to deploy our application for the first time:
 
 ```bash
