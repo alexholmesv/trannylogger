@@ -1,15 +1,18 @@
-server 'ubuntuservervbox', :app, :db, primary: true
+server 'app_server:22', :app, :db, primary: true
+#server 'db_server:22', :db
 
+#Application settings
 set :rails_env, "staging"
-set :branch, "master"
-
+set :branch, "staging"
 set :deploy_to, "/home/deploy/#{rails_env}.#{app_stage}"
 
+#Database settings
 set :database_adapter, "postgresql"
 set :database_username, "postgres"
-set :database_password, "123456"
+set :database_password, "postgres"
 
-set :server_port, "3000"
+#Thin server settings
+set :server_port, "3010"
 set :server_timeout, "30"
 set :server_max_conns, "1024"
 set :server_max_persistent_conns, "512"
