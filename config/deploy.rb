@@ -1,36 +1,26 @@
+#Configure your stages
 set :stages, %w(production staging)
 set :default_stage, "staging"
 require 'capistrano/ext/multistage'
 
+#Set your application name and domain
 set :application, "my_app"
 set :app_stage, "myapplication.com"
 
+#Set your user and group for shell commands
 set :user, "deploy"
 set :group, "deploy"
 
+#Set your Git repo
 set :scm, :git # You can set :scm explicitly or Capistrano will make an intelligent guess based on known version control directory names
 set :repository,  "git@gitserver.com:repo.git"
 set :deploy_to, "/home/deploy/#{rails_env}.#{app_stage}"
 set :deploy_via, :remote_cache
 set :ssh_options, { forward_agent: true}
 
+#Set your servers. Both are required, but they could be the same one
 role :app, "app_server"
 role :db, "db_server"
-
-# if you want to clean up old releases on each deploy uncomment this:
-# after "deploy:restart", "deploy:cleanup"
-
-# if you're still using the script/reaper helper you will need
-# these http://github.com/rails/irs_process_scripts
-
-# If you are using Passenger mod_rails uncomment this:
-# namespace :deploy do
-#   task :start do ; end
-#   task :stop do ; end
-#   task :restart, :roles => :app, :except => { :no_release => true } do
-#     run "#{try_sudo} touch #{File.join(current_path,'tmp','restart.txt')}"
-#   end
-# end
 
 namespace :deploy do
   desc "Create and set permittions for capistrano directory structure."
@@ -49,8 +39,9 @@ namespace :deploy do
     db_config = <<-EOF
 #{rails_env}:
   adapter:  #{database_adapter}
-  database: "#{application}_#{rails_env}"
-  pool:     25
+  database: #{application}_#{rails_env}
+  host:     #{database_host}
+  pool:     #{database_pool}
   username: #{database_username}
   password: #{database_password}
 EOF
