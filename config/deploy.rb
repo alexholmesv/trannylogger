@@ -108,11 +108,6 @@ EOF
     run "cd #{current_path} && bundle exec thin restart -C #{shared_path}/thin/server.yml"
   end
 
-  desc "Run assets:precompile rake task for the deployed application."
-  task :assets do
-    run "cd #{current_path} && bundle exec rake assets:precompile RAILS_ENV=#{rails_env} RAILS_GROUPS=assets"
-  end
-
   desc "First time deploy"
 	task :cold do
     update_release
@@ -120,9 +115,25 @@ EOF
     db_symlink
     db_setup
     migrate
-    assets
+    rake:assets
     thin_configure
     start
+  end
+end
+
+namespace :rake do
+  desc "Run assets:precompile rake task for the deployed application."
+  task :assets do
+    run "cd #{current_path} && bundle exec rake assets:precompile RAILS_ENV=#{rails_env} RAILS_GROUPS=assets"
+  end
+end
+
+namespace :rails do
+  desc "Open the rails console on one of the remote servers"
+  task :console do
+    hostname = find_servers_for_task(current_task).first
+    port = exists?(:port) ? fetch(:port) : 22
+    exec "ssh -l #{user} #{hostname} -p #{port} -t '#{current_path}/script/rails c #{rails_env}'"
   end
 end
 
