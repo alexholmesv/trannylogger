@@ -108,7 +108,7 @@ EOF
     run "cd #{current_path} && bundle exec thin restart -C #{shared_path}/thin/server.yml"
   end
 
-  desc "First time deploy"
+  desc "First time deploy."
 	task :cold do
     update_release
     db_configure
@@ -118,6 +118,15 @@ EOF
     rake.assets
     thin_configure
     start
+  end
+
+  desc "Deploys you application."
+  task :default do
+    update_release
+    db_symlink
+    migrate
+    rake.assets
+    restart
   end
 end
 
@@ -129,7 +138,7 @@ namespace :rake do
 end
 
 namespace :rails do
-  desc "Open the rails console on one of the remote servers"
+  desc "Open the rails console on one of the remote servers."
   task :console do
     hostname = find_servers_for_task(current_task).first
     port = exists?(:port) ? fetch(:port) : 22
