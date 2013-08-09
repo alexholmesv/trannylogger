@@ -33,11 +33,6 @@ role :db, "ubuntuservervbox"
 # end
 
 namespace :deploy do
-  desc "Set the directory path for the deploy"
-	task :set_path do
-    set :deploy_to, "/home/deploy/#{rails_env}.#{app_stage}"
-	end
-
   desc "Create and set permittions for capistrano directory structure"
 	task :setup do
     run "mkdir -p #{deploy_to} #{deploy_to}/releases #{deploy_to}/shared #{deploy_to}/shared/system #{deploy_to}/shared/log #{deploy_to}/shared/pids"
@@ -52,16 +47,40 @@ namespace :deploy do
   desc "Create database yaml in shared path"
   task :db_configure do
     db_config = <<-EOF
-      #{rails_env}:
-        adapter:  #{database_adapter}
-        database: "#{application}_#{rails_env}"
-        pool:     25
-        username: #{database_username}
-        password: #{database_password}
+#{rails_env}:
+  adapter:  #{database_adapter}
+  database: "#{application}_#{rails_env}"
+  pool:     25
+  username: #{database_username}
+  password: #{database_password}
     EOF
 
     run "rm -Rf #{shared_path}/config && mkdir -p #{shared_path}/config"
     put db_config, "#{shared_path}/config/database.yml"
+  end
+
+  desc "Create thin configuration yaml in shared path"
+  task :thin_configure do
+    thin_config = <<-EOF
+---
+chdir:                #{current_path}
+environment:          #{rails_env}
+address:              0.0.0.0
+port:                 #{server_port}
+timeout:              #{server_timeout}
+log:                  #{shared_path}/log/thin.log
+pid:                  #{shared_path}/pids/thin.pid
+max_conns:            #{server_max_conns}
+max_persistent_conns: #{server_max_persistent_conns}
+require:              []
+
+wait:                 #{server_wait}
+servers:              #{server_threads}
+daemonize:            true
+    EOF
+
+    run "rm -Rf #{shared_path}/thin && mkdir -p #{shared_path}/thin"
+    put thin_config, "#{shared_path}/thin/server.yml"
   end
 
   desc "Make symlink for database yaml"
@@ -76,37 +95,37 @@ namespace :deploy do
 
   desc "Start Thin server"
   task :start do
-    run "cd #{current_path} && bundle exec thin start -d -e #{rails_env} --servers 2 --port 3000 --onebyone --wait 300"
+    run "cd #{current_path} && bundle exec thin start -C #{shared_path}/thin/server.yml"
   end
 
   desc "Stop Thin server"
   task :stop do
-    run "cd #{current_path} && bundle exec thin stop -d -e #{rails_env} --servers 2 --port 3000 --onebyone --wait 300"
+    run "cd #{current_path} && bundle exec thin stop -C #{shared_path}/thin/server.yml"
   end
 
   desc "Restart Thin server"
   task :restart do
-    run "cd #{current_path} && bundle exec thin restart -d -e #{rails_env} --servers 2 --port 3000 --onebyone --wait 300"
+    run "cd #{current_path} && bundle exec thin restart -C #{shared_path}/thin/server.yml"
   end
 
-  desc "Run assets:precompile rake task for de deployed application"
-  task :precompile do
+  desc "Run assets:precompile rake task for the deployed application"
+  task :assets do
     run "cd #{current_path} && bundle exec rake assets:precompile RAILS_ENV=#{rails_env}"
   end
 
   desc "First time deploy"
 	task :cold do
     update_release
+    db_configure
+    db_symlink
     db_setup
     migrate
-    precompile
+    assets
+    thin_configure
     start
   end
 end
 
-before "deploy:cold", "deploy:set_path"
 before "deploy:cold", "deploy:setup"
 
 after "deploy:update_release", "deploy:create_symlink"
-after "deploy:create_symlink", "deploy:db_configure"
-after "deploy:db_configure", "deploy:db_symlink"
