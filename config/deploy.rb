@@ -2,20 +2,20 @@ set :stages, %w(production staging)
 set :default_stage, "staging"
 require 'capistrano/ext/multistage'
 
-set :application, "tarotronic"
-set :app_stage, "tarotronic.com"
+set :application, "my_app"
+set :app_stage, "myapplication.com"
 
 set :user, "deploy"
 set :group, "deploy"
 
 set :scm, :git # You can set :scm explicitly or Capistrano will make an intelligent guess based on known version control directory names
-set :repository,  "git@gitlab.acid.cl:tarotronic.git"
+set :repository,  "git@gitserver.com:repo.git"
 set :deploy_to, "/home/deploy/#{rails_env}.#{app_stage}"
 set :deploy_via, :remote_cache
 set :ssh_options, { forward_agent: true}
 
-role :app, "ubuntuservervbox"
-role :db, "ubuntuservervbox"
+role :app, "app_server"
+role :db, "db_server"
 
 # if you want to clean up old releases on each deploy uncomment this:
 # after "deploy:restart", "deploy:cleanup"
@@ -34,18 +34,18 @@ role :db, "ubuntuservervbox"
 
 namespace :deploy do
   desc "Create and set permittions for capistrano directory structure."
-	task :setup do
+	task :setup, roles: :app do
     run "mkdir -p #{deploy_to} #{deploy_to}/releases #{deploy_to}/shared #{deploy_to}/shared/system #{deploy_to}/shared/log #{deploy_to}/shared/pids"
     run "chmod g+w #{deploy_to} #{deploy_to}/releases #{deploy_to}/shared #{deploy_to}/shared/system #{deploy_to}/shared/log #{deploy_to}/shared/pids"
 	end
 
   desc "Clone project in a new release path and install gems in Gemfile."
-  task :update_release do
+  task :update_release, roles: :app do
     run "git clone #{repository} -b #{branch} #{deploy_to}/releases/#{release_name} && cd #{deploy_to}/releases/#{release_name} && bundle install --without development test"
   end
 
   desc "Create database yaml in shared path."
-  task :db_configure do
+  task :db_configure, roles: :db do
     db_config = <<-EOF
 #{rails_env}:
   adapter:  #{database_adapter}
@@ -60,7 +60,7 @@ EOF
   end
 
   desc "Create thin configuration yaml in shared path."
-  task :thin_configure do
+  task :thin_configure, roles: :app do
     thin_config = <<-EOF
 ---
 chdir:                #{current_path}
@@ -84,32 +84,32 @@ EOF
   end
 
   desc "Make symlink for database yaml."
-  task :db_symlink do
+  task :db_symlink, roles: :app do
     run "ln -snf #{shared_path}/config/database.yml #{current_path}/config/database.yml"
   end
 
   desc "Configuring database for project."
-  task :db_setup do
+  task :db_setup, roles: [:app, :db] do
     run "cd #{current_path} && bundle exec rake db:setup RAILS_ENV=#{rails_env}"
   end
 
   desc "Start Thin server."
-  task :start do
+  task :start, roles: :app do
     run "cd #{current_path} && bundle exec thin start -C #{shared_path}/thin/server.yml"
   end
 
   desc "Stop Thin server."
-  task :stop do
+  task :stop, roles: :app do
     run "cd #{current_path} && bundle exec thin stop -C #{shared_path}/thin/server.yml"
   end
 
   desc "Restart Thin server."
-  task :restart do
+  task :restart, roles: :app do
     run "cd #{current_path} && bundle exec thin restart -C #{shared_path}/thin/server.yml"
   end
 
   desc "First time deploy."
-	task :cold do
+	task :cold, roles: [:app, :db] do
     update_release
     db_configure
     db_symlink
@@ -121,7 +121,7 @@ EOF
   end
 
   desc "Deploys you application."
-  task :default do
+  task :default, roles: [:app, :db] do
     update_release
     db_symlink
     migrate
@@ -132,14 +132,14 @@ end
 
 namespace :rake do
   desc "Run assets:precompile rake task for the deployed application."
-  task :assets do
+  task :assets, roles: :app do
     run "cd #{current_path} && bundle exec rake assets:precompile RAILS_ENV=#{rails_env} RAILS_GROUPS=assets"
   end
 end
 
 namespace :rails do
   desc "Open the rails console on one of the remote servers."
-  task :console do
+  task :console, roles: :app do
     hostname = find_servers_for_task(current_task).first
     port = exists?(:port) ? fetch(:port) : 22
     exec "ssh -l #{user} #{hostname} -p #{port} -t '#{current_path}/script/rails c #{rails_env}'"
@@ -147,5 +147,4 @@ namespace :rails do
 end
 
 before "deploy:cold", "deploy:setup"
-
 after "deploy:update_release", "deploy:create_symlink"
