@@ -1,3 +1,7 @@
+# Requirements
+
+Ubuntu Server 12.04 LTS, configured with chef for PostgreSQL: [Acid Labs](https://github.com/acidlabs/chef-rails)
+
 # Configure your stages
 
 ```ruby
