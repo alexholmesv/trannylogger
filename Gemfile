@@ -1,0 +1,1 @@
+gem "capistrano-rails", "~> 0.0.7"
