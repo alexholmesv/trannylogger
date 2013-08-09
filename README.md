@@ -102,3 +102,23 @@ set :server_max_persistent_conns, "512"
 set :server_wait, "30"
 set :server_threads, "2"
 ```
+
+# Ready to go?
+
+Now, we need to deploy our application for the first time:
+
+```bash
+cap <stage> deploy:cold
+```
+
+For each deploy, after our first one:
+
+```bash
+cap <stage> deploy
+```
+
+To list the task we can execute with Capistrano:
+
+```bash
+cap -vT
+```
