@@ -115,7 +115,7 @@ EOF
     db_symlink
     db_setup
     migrate
-    rake:assets
+    rake.assets
     thin_configure
     start
   end
