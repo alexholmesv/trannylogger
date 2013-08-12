@@ -124,3 +124,6 @@ To list the task we can execute with Capistrano:
 ```bash
 cap -vT
 ```
+
+# Capistrano integration
+[Sidekiq](https://github.com/mperham/sidekiq/wiki/Deployment#capistrano)
