@@ -54,13 +54,6 @@ AllowAgentForwarding yes
 ```
 Then we have to restart ssh
 
-# Set your servers. Both are required, but they could be the same one
-
-```ruby
-role :app, "app_server"
-role :db, "db_server"
-```
-
 # Configure your stages params
 
 ```ruby

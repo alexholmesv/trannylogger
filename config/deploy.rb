@@ -18,10 +18,6 @@ set :deploy_to, "/home/deploy/#{rails_env}.#{app_stage}"
 set :deploy_via, :remote_cache
 set :ssh_options, { forward_agent: true}
 
-#Set your servers. Both are required, but they could be the same one
-role :app, "app_server"
-role :db, "db_server"
-
 namespace :deploy do
   desc "Create and set permittions for capistrano directory structure."
 	task :setup, roles: :app do
@@ -34,8 +30,21 @@ namespace :deploy do
     run "git clone #{repository} -b #{branch} #{deploy_to}/releases/#{release_name} && cd #{deploy_to}/releases/#{release_name} && bundle install --without development test"
   end
 
+  desc "Updates the symlink to the most recently deployed version."
+  task :create_symlink, roles: :app, :except => { :no_release => true } do
+    on_rollback do
+      if previous_release
+        run "rm -f #{current_path}; ln -s #{previous_release} #{current_path}; true"
+      else
+        logger.important "no previous release to rollback to, rollback of symlink skipped"
+      end
+    end
+
+    run "rm -f #{current_path} && ln -s #{latest_release} #{current_path}"
+  end
+
   desc "Create database yaml in shared path."
-  task :db_configure, roles: :db do
+  task :db_configure, roles: :app do
     db_config = <<-EOF
 #{rails_env}:
   adapter:  #{database_adapter}
@@ -80,7 +89,7 @@ EOF
   end
 
   desc "Configuring database for project."
-  task :db_setup, roles: [:app, :db] do
+  task :db_setup, roles: :app do
     run "cd #{current_path} && bundle exec rake db:setup RAILS_ENV=#{rails_env}"
   end
 
@@ -100,22 +109,22 @@ EOF
   end
 
   desc "First time deploy."
-	task :cold, roles: [:app, :db] do
+	task :cold do
     update_release
     db_configure
     db_symlink
     db_setup
-    migrate
+    rake.migrate
     rake.assets
     thin_configure
     start
   end
 
   desc "Deploys you application."
-  task :default, roles: [:app, :db] do
+  task :default do
     update_release
     db_symlink
-    migrate
+    rake.migrate
     rake.assets
     restart
   end
@@ -125,6 +134,11 @@ namespace :rake do
   desc "Run assets:precompile rake task for the deployed application."
   task :assets, roles: :app do
     run "cd #{current_path} && bundle exec rake assets:precompile RAILS_ENV=#{rails_env} RAILS_GROUPS=assets"
+  end
+
+  desc "Run the migrate rake task."
+  task :migrate, roles: :app do
+    run "cd #{current_path} && bundle exec rake RAILS_ENV=#{rails_env} db:migrate"
   end
 end
 
