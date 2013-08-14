@@ -29,7 +29,6 @@ set :group, "deploy"
 ```ruby
 set :scm, :git # You can set :scm explicitly or Capistrano will make an intelligent guess based on known version control directory names
 set :repository,  "git@gitserver.com:repo.git"
-set :deploy_to, "/home/deploy/#{rails_env}.#{app_stage}"
 set :deploy_via, :remote_cache
 set :ssh_options, { forward_agent: true}
 ```
