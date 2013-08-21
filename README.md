@@ -117,5 +117,11 @@ To list the task we can execute with Capistrano:
 cap -vT
 ```
 
+We recommend to clean the releases directory periodically:
+
+```bash
+cap deploy:cleanup -s keep_releases=3 # this command will keep the last 3 releases
+```
+
 # Capistrano integration
 [Sidekiq](https://github.com/mperham/sidekiq/wiki/Deployment#capistrano)
