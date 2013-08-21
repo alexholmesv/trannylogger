@@ -76,6 +76,7 @@ require:              []
 wait:                 #{server_wait}
 servers:              #{server_threads}
 daemonize:            true
+onebyone:             true
 EOF
 
     run "rm -Rf #{shared_path}/thin && mkdir -p #{shared_path}/thin"
