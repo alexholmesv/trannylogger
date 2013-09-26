@@ -111,6 +111,14 @@ For each deploy, after our first one:
 cap <stage> deploy
 ```
 
+With our application running, we can start/stop our upstart daemon, monitoring thin in server terminal:
+
+```bash
+sudo start/stop <application_upstart>
+```
+
+If we want to stop our server, we have to stop upstart daemon first.
+
 To list the task we can execute with Capistrano:
 
 ```bash

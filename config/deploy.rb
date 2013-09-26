@@ -117,7 +117,7 @@ EOF
     rake.migrate
     rake.assets
     thin_configure
-    start
+    foreman.setup
   end
 
   desc "Deploys you application."
@@ -148,6 +148,21 @@ namespace :rails do
     hostname = find_servers_for_task(current_task).first
     port = exists?(:port) ? fetch(:port) : 22
     exec "ssh -l #{user} #{hostname} -p #{port} -t '#{current_path}/script/rails c #{rails_env}'"
+  end
+end
+
+namespace :foreman do
+  desc "Create executable scripts for thin handle"
+  task :setup, roles: :app do
+    procfile = <<-EOF
+web: cd #{current_path} && bundle exec thin start -C #{shared_path}/thin/server.yml
+EOF
+
+    run "rm -Rf #{shared_path}/foreman && mkdir -p #{shared_path}/foreman"
+    put procfile, "#{shared_path}/foreman/Procfile"
+    run "cd #{current_path} && bundle exec foreman start -f #{shared_path}/foreman/Procfile"
+    run "cd #{current_path} && #{sudo} foreman export upstart /etc/init -f #{shared_path}/foreman/Procfile -a #{rails_env}.#{app_stage} -u #{user}"
+    run "#{sudo} start #{rails_env}.#{app_stage}"
   end
 end
 
