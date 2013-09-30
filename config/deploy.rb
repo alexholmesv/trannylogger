@@ -152,19 +152,32 @@ namespace :rails do
 end
 
 namespace :foreman do
-  desc "Create executable scripts for thin handle"
+  desc "Create executable scripts for application server handle"
   task :setup, roles: :app do
     procfile = <<-EOF
 web: cd #{current_path} && bundle exec thin start -C #{shared_path}/thin/server.yml
+worker: cd #{current_path} && bundle exec sidekiq -e #{rails_env} -P #{sidekiq_pid}
 EOF
 
     run "rm -Rf #{shared_path}/foreman && mkdir -p #{shared_path}/foreman"
     put procfile, "#{shared_path}/foreman/Procfile"
     run "cd #{current_path} && bundle exec foreman start -f #{shared_path}/foreman/Procfile"
     run "cd #{current_path} && #{sudo} foreman export upstart /etc/init -f #{shared_path}/foreman/Procfile -a #{rails_env}.#{app_stage} -u #{user}"
+    monitor
+  end
+
+  desc "Start upstart monitoring"
+  task :monitor, roles: :app do
     run "#{sudo} start #{rails_env}.#{app_stage}"
+  end
+
+  desc "Stop upstart monitoring"
+  task :unmonitor, roles: :app do
+    run "#{sudo} stop #{rails_env}.#{app_stage}"
   end
 end
 
 before "deploy:cold", "deploy:setup"
+before "deploy:stop", "foreman:unmonitor"
 after "deploy:update_release", "deploy:create_symlink"
+after "deploy:start", "foreman:monitor"
