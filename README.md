@@ -53,6 +53,12 @@ AllowAgentForwarding yes
 ```
 Then we have to restart ssh
 
+If you still can't clone the project check if your key is added to the authentication agent in your machine
+
+```bash
+ssh-add ~/.ssh/id_rsa
+```
+
 # Configure your stages params
 
 ```ruby
