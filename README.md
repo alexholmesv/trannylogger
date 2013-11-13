@@ -102,6 +102,7 @@ set :server_threads, "2"
 ```
 
 # Using RVM
+
 If you installed RVM in your server, you need to do the following
 
 * Add `rvm-capistrano` to your Gemfile and `bundle install`
