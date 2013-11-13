@@ -101,6 +101,13 @@ set :server_wait, "30"
 set :server_threads, "2"
 ```
 
+# Using RVM
+If you installed RVM in your server, you need to do the following
+
+* Add `rvm-capistrano` to your Gemfile and `bundle install`
+* Require it in your deploy configuration `require 'rvm/capistrano'`
+* If you are using a system wide installation set the rvm_type variable `set :rvm_type, :system`
+
 # Ready to go?
 
 ### Don't forget to execute bundle install inside the cap directory.
