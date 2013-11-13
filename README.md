@@ -101,7 +101,7 @@ set :server_wait, "30"
 set :server_threads, "2"
 ```
 
-# Using RVM
+## Using RVM
 
 If you installed RVM in your server, you need to do the following
 
