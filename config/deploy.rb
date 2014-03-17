@@ -108,6 +108,13 @@ EOF
     run "cd #{current_path} && bundle exec thin restart -C #{shared_path}/thin/server.yml"
   end
 
+  desc "Show log file in real time"
+  task :log do
+    hostname = find_servers_for_task(current_task).first
+    port = exists?(:port) ? fetch(:port) : 22
+    exec "ssh -l #{user} #{hostname} -p #{port} -t 'tail -f #{current_path}/log/#{rails_env}.log'"
+  end
+
   desc "First time deploy."
 	task :cold do
     update_release
