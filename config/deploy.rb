@@ -2,6 +2,13 @@
 set :stages, %w(production staging)
 set :default_stage, "staging"
 require 'capistrano/ext/multistage'
+require 'rvm/capistrano'
+require 'sidekiq/capistrano'
+
+set :rvm_type, :user
+set :rvm_ruby_version, 'ruby-version@gemset'
+set :bundle_dir, ''
+set :bundle_flags, '--quiet'
 
 #Set your application name and domain
 set :application, "my_app"
