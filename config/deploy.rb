@@ -165,8 +165,17 @@ EOF
     exec "ssh -l #{user} #{hostname} -p #{port} -t 'tail -f #{current_path}/log/#{rails_env}.log'"
   end
 
+  desc "Run cleanup task when releases count reach threshold"
+  task :auto_cleanup, :except => { :no_release => true } do
+    thresh = fetch(:cleanup_threshold, 20).to_i
+    if releases.length > thresh
+      logger.info "Threshold of #{thresh} releases reached, runing deploy:cleanup."
+      cleanup
+    end
+  end
+
   desc "First time deploy."
-	task :cold do
+  task :cold do
     first_release
     db_configure
     db_symlink
@@ -216,3 +225,4 @@ end
 before "deploy:cold", "deploy:setup"
 before "deploy:start", "deploy:create_symlink"
 before "deploy:restart", "deploy:create_symlink"
+after "deploy", "deploy:auto_cleanup"
