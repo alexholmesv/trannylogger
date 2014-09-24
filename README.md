@@ -1,6 +1,10 @@
+# About
+
+Capistrano configuration for Rails application using Thin Server, Sidekiq and RVM at user level.
+
 # Requirements
 
-Ubuntu Server 12.04 LTS, configured with chef for PostgreSQL: [Acid Labs](https://github.com/acidlabs/chef-rails)
+Ubuntu Server 12.04 LTS, 14.04 LTS, configured with chef for PostgreSQL: [Acid Labs](https://github.com/acidlabs/chef-rails)
 
 # Configure your stages
 
@@ -24,12 +28,16 @@ set :user, "deploy"
 set :group, "deploy"
 ```
 
+# Set Ruby version and gemset
+```ruby
+set :rvm_ruby_version, 'ruby-version@gemset'
+```
+
 # Set your Git repo
 
 ```ruby
 set :scm, :git # You can set :scm explicitly or Capistrano will make an intelligent guess based on known version control directory names
 set :repository,  "git@gitserver.com:repo.git"
-set :deploy_via, :remote_cache
 set :ssh_options, { forward_agent: true}
 ```
 To be able to user forward agent, we need to add a config file in our .ssh/ directory:
@@ -46,7 +54,7 @@ Host db_server
 
 In each server, we have add or modified the following line:
 
-For Ubuntu Server 12.04: /etc/ssh/sshd_config
+For Ubuntu Server 12.04/14.04: /etc/ssh/sshd_config
 
 ```bash
 AllowAgentForwarding yes
@@ -101,13 +109,26 @@ set :server_wait, "30"
 set :server_threads, "2"
 ```
 
-## Using RVM
+# In case you need to share more directories between releases
 
-If you installed RVM in your server, you need to do the following
+You have to add them to `deploy:setup` task before first deploy
 
-* Add `rvm-capistrano` to your Gemfile and `bundle install`
-* Require it in your deploy configuration `require 'rvm/capistrano'`
-* If you are using a system wide installation set the rvm_type variable `set :rvm_type, :system`
+```ruby
+task :setup, roles: :app do
+  run "mkdir -p #{deploy_to}/{releases,shared/{assets,config,log,pids,system}}"
+  run "chmod -R g+w #{deploy_to}"
+end
+```
+
+And then add symlink creation command to `deploy:dir_symlink`
+
+```ruby
+task :dir_symlink, roles: :app do
+  run "ln -snf #{shared_path}/assets #{latest_release}/public/assets"
+  run "ln -snf #{shared_path}/log #{latest_release}/log"
+  run "ln -snf #{shared_path}/system #{latest_release}/public/system"
+end
+```
 
 # Ready to go?
 
@@ -116,33 +137,24 @@ If you installed RVM in your server, you need to do the following
 Now, we need to deploy our application for the first time:
 
 ```bash
-cap <stage> deploy:cold
+bundle exec cap <stage> deploy:cold
 ```
 
 For each deploy, after our first one:
 
 ```bash
-cap <stage> deploy
+bundle exec cap <stage> deploy
 ```
-
-With our application running, we can start/stop our upstart daemon, monitoring thin in server terminal:
+To list the tasks we can execute with Capistrano:
 
 ```bash
-sudo start/stop <application_upstart>
-```
-
-If we want to stop our server, we have to stop upstart daemon first.
-
-To list the task we can execute with Capistrano:
-
-```bash
-cap -vT
+bundle exec cap -vT
 ```
 
 We recommend to clean the releases directory periodically:
 
 ```bash
-cap deploy:cleanup -s keep_releases=3 # this command will keep the last 3 releases
+bundle exec cap deploy:cleanup -s keep_releases=3 # this command will keep the last 3 releases
 ```
 
 # Capistrano integration
