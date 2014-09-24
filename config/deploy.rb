@@ -3,7 +3,7 @@ set :stages, %w(production staging)
 set :default_stage, "staging"
 require 'capistrano/ext/multistage'
 require 'rvm/capistrano'
-require 'sidekiq/capistrano'
+require 'capistrano/sidekiq'
 
 set :rvm_type, :user
 set :rvm_ruby_version, 'ruby-version@gemset'
