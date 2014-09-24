@@ -27,8 +27,8 @@ set :ssh_options, { forward_agent: true}
 namespace :deploy do
   desc "Create and set permittions for capistrano directory structure."
   task :setup, roles: :app do
-    run "mkdir -p #{deploy_to} #{deploy_to}/releases #{deploy_to}/shared #{deploy_to}/shared/system #{deploy_to}/shared/log #{deploy_to}/shared/pids"
-    run "chmod g+w #{deploy_to} #{deploy_to}/releases #{deploy_to}/shared #{deploy_to}/shared/system #{deploy_to}/shared/log #{deploy_to}/shared/pids"
+    run "mkdir -p #{deploy_to}/{releases,shared/assets,shared/log,shared/pids,shared/system}"
+    run "chmod -R g+w #{deploy_to}"
   end
 
   desc "Clone project in a new release path and install gems in Gemfile."
