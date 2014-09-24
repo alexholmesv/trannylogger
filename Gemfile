@@ -1,3 +1,5 @@
 source 'https://rubygems.org'
 
-gem "capistrano-rails", "~> 0.0.7"
+gem 'capistrano',  '~> 2.15'
+gem 'rvm-capistrano'
+gem "sidekiq"
