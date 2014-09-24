@@ -26,7 +26,7 @@ set :ssh_options, { forward_agent: true}
 namespace :deploy do
   desc "Create and set permittions for capistrano directory structure."
   task :setup, roles: :app do
-    run "mkdir -p #{deploy_to}/{releases,shared/assets,shared/log,shared/pids,shared/system}"
+    run "mkdir -p #{deploy_to}/{releases,shared/{assets,config,log,pids,system}}"
     run "chmod -R g+w #{deploy_to}"
   end
 
@@ -72,7 +72,7 @@ namespace :deploy do
   password: #{database_password}
 EOF
 
-    run "rm -Rf #{shared_path}/config && mkdir -p #{shared_path}/config"
+    run "rm -f #{shared_path}/config/database.yml"
     put db_config, "#{shared_path}/config/database.yml"
   end
 
@@ -97,33 +97,65 @@ daemonize:            true
 onebyone:             true
 EOF
 
-    run "rm -Rf #{shared_path}/thin && mkdir -p #{shared_path}/thin"
-    put thin_config, "#{shared_path}/thin/server.yml"
+    run "rm -f #{shared_path}/config/thin.yml"
+    put thin_config, "#{shared_path}/config/thin.yml"
+  end
+
+  desc "Create sidekiq configuration yaml in shared_path"
+  task :sidekiq_configure, roles: :app do
+    sidekiq_config = <<-EOF
+---
+:pidfile: #{sidekiq_pid}
+#{rails_env}:
+  :concurrency: 25
+:queues:
+  - default
+EOF
+
+    run "rm -f #{shared_path}/config/sidekiq.yml"
+    put sidekiq_config, "#{shared_path}/config/sidekiq.yml"
   end
 
   desc "Make symlink for database yaml."
   task :db_symlink, roles: :app do
-    run "ln -snf #{shared_path}/config/database.yml #{current_path}/config/database.yml"
+    run "ln -snf #{shared_path}/config/database.yml #{latest_release}/config/database.yml"
+  end
+
+  desc "Make symlink for public directories."
+  task :dir_symlink, roles: :app do
+    run "ln -snf #{shared_path}/assets #{latest_release}/public/assets"
+    run "ln -snf #{shared_path}/log #{latest_release}/public/log"
+    run "ln -snf #{shared_path}/system #{latest_release}/system"
+  end
+
+  desc "Make symlink for sidekiq yaml"
+  task :sidekiq_symlink, roles: :app do
+    run "ln -snf #{shared_path}/config/sidekiq.yml #{latest_release}/config/sidekiq.yml"
   end
 
   desc "Configuring database for project."
   task :db_setup, roles: :app do
-    run "cd #{current_path} && bundle exec rake db:setup RAILS_ENV=#{rails_env}"
+    run "cd #{latest_release} && bundle exec rake db:setup RAILS_ENV=#{rails_env}"
   end
 
   desc "Start Thin server."
   task :start, roles: :app do
-    run "cd #{current_path} && bundle exec thin start -C #{shared_path}/thin/server.yml"
+    run "cd #{current_path} && bundle exec thin start -C #{shared_path}/config/thin.yml"
   end
 
   desc "Stop Thin server."
   task :stop, roles: :app do
-    run "cd #{current_path} && bundle exec thin stop -C #{shared_path}/thin/server.yml"
+    run "cd #{current_path} && bundle exec thin stop -C #{shared_path}/config/thin.yml"
   end
 
   desc "Restart Thin server."
   task :restart, roles: :app do
-    run "cd #{current_path} && bundle exec thin restart -C #{shared_path}/thin/server.yml"
+    run "cd #{current_path} && bundle exec thin restart -C #{shared_path}/config/thin.yml"
+  end
+
+  desc "Reload database with seed data"
+  task :seed, roles: :app do
+    run "cd #{current_path} && bundle exec rake db:seed RAILS_ENV=#{rails_env}"
   end
 
   desc "Show log file in real time"
@@ -135,22 +167,27 @@ EOF
 
   desc "First time deploy."
 	task :cold do
-    update_release
+    first_release
     db_configure
     db_symlink
+    dir_symlink
     db_setup
     rake.migrate
     rake.assets
     thin_configure
-    foreman.setup
+    sidekiq_configure
+    sidekiq_symlink
+    start
   end
 
   desc "Deploys you application."
   task :default do
     update_release
     db_symlink
+    dir_symlink
     rake.migrate
     rake.assets
+    sidekiq_symlink
     restart
   end
 end
@@ -158,12 +195,12 @@ end
 namespace :rake do
   desc "Run assets:precompile rake task for the deployed application."
   task :assets, roles: :app do
-    run "cd #{current_path} && bundle exec rake assets:precompile RAILS_ENV=#{rails_env} RAILS_GROUPS=assets"
+    run "cd #{latest_release} && bundle exec rake assets:precompile RAILS_ENV=#{rails_env} RAILS_GROUPS=assets #{bundle_flags}"
   end
 
   desc "Run the migrate rake task."
   task :migrate, roles: :app do
-    run "cd #{current_path} && bundle exec rake RAILS_ENV=#{rails_env} db:migrate"
+    run "cd #{latest_release} && bundle exec rake RAILS_ENV=#{rails_env} db:migrate #{bundle_flags}"
   end
 end
 
@@ -176,33 +213,6 @@ namespace :rails do
   end
 end
 
-namespace :foreman do
-  desc "Create executable scripts for application server handle"
-  task :setup, roles: :app do
-    procfile = <<-EOF
-web: cd #{current_path} && bundle exec thin start -C #{shared_path}/thin/server.yml
-worker: cd #{current_path} && bundle exec sidekiq -e #{rails_env} -P #{sidekiq_pid}
-EOF
-
-    run "rm -Rf #{shared_path}/foreman && mkdir -p #{shared_path}/foreman"
-    put procfile, "#{shared_path}/foreman/Procfile"
-    run "cd #{current_path} && bundle exec foreman start -f #{shared_path}/foreman/Procfile"
-    run "cd #{current_path} && #{sudo} foreman export upstart /etc/init -f #{shared_path}/foreman/Procfile -a #{rails_env}.#{app_stage} -u #{user}"
-    monitor
-  end
-
-  desc "Start upstart monitoring"
-  task :monitor, roles: :app do
-    run "#{sudo} start #{rails_env}.#{app_stage}"
-  end
-
-  desc "Stop upstart monitoring"
-  task :unmonitor, roles: :app do
-    run "#{sudo} stop #{rails_env}.#{app_stage}"
-  end
-end
-
 before "deploy:cold", "deploy:setup"
-before "deploy:stop", "foreman:unmonitor"
-after "deploy:update_release", "deploy:create_symlink"
-after "deploy:start", "foreman:monitor"
+before "deploy:start", "deploy:create_symlink"
+before "deploy:restart", "deploy:create_symlink"
