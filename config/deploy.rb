@@ -21,7 +21,6 @@ set :group, "deploy"
 #Set your Git repo
 set :scm, :git # You can set :scm explicitly or Capistrano will make an intelligent guess based on known version control directory names
 set :repository,  "git@gitserver.com:repo.git"
-set :deploy_via, :remote_cache
 set :ssh_options, { forward_agent: true}
 
 namespace :deploy do
@@ -31,9 +30,21 @@ namespace :deploy do
     run "chmod -R g+w #{deploy_to}"
   end
 
+  desc "Clone project in a cached_copy path and install gems in Gemfile."
+  task :first_release, roles: :app do
+    run "git clone #{repository} -b #{branch} #{shared_path}/cached_copy && cd #{shared_path}/cached_copy && bundle install --without development test --path #{shared_path}/vendor/bundle --binstubs #{shared_path}/vendor/bundle/bin --deployment"
+    copy_cache
+  end
+
+  desc "Copy cached version to new release path"
+  task :copy_cache, roles: :app do
+    run "cd #{shared_path}/cached_copy && git fetch && git checkout #{branch} && git pull origin #{branch} && cp -RPp #{shared_path}/cached_copy #{deploy_to}/releases/#{release_name}"
+  end
+
   desc "Clone project in a new release path and install gems in Gemfile."
   task :update_release, roles: :app do
-    run "git clone #{repository} -b #{branch} #{deploy_to}/releases/#{release_name} && cd #{deploy_to}/releases/#{release_name} && bundle install --without development test"
+    copy_cache
+    run "cd #{deploy_to}/releases/#{release_name} && bundle install --without development test --path #{shared_path}/vendor/bundle --binstubs #{shared_path}/vendor/bundle/bin --deployment"
   end
 
   desc "Updates the symlink to the most recently deployed version."
