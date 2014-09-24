@@ -124,8 +124,8 @@ EOF
   desc "Make symlink for public directories."
   task :dir_symlink, roles: :app do
     run "ln -snf #{shared_path}/assets #{latest_release}/public/assets"
-    run "ln -snf #{shared_path}/log #{latest_release}/public/log"
-    run "ln -snf #{shared_path}/system #{latest_release}/system"
+    run "ln -snf #{shared_path}/log #{latest_release}/log"
+    run "ln -snf #{shared_path}/system #{latest_release}/public/system"
   end
 
   desc "Make symlink for sidekiq yaml"
