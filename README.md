@@ -157,5 +157,20 @@ We recommend to clean the releases directory periodically:
 bundle exec cap deploy:cleanup -s keep_releases=3 # this command will keep the last 3 releases
 ```
 
+After each deploy, we run `deploy:auto_cleanup` task. This task will check if we reach the cleanup threshold (20 by default) and run `deploy:cleanup` in that case.
+
+Set the number of releases you want to keep in `deploy.rb` file:
+
+```ruby
+#Set number of releases you want to keep after cleanup.
+set :keep_releases, 10
+```
+
+In case you want to set your own cleanup threshold, you can add `set :cleanup_threshold, <number>` to `deploy.rb` or you can run the task in command line whenever you want:
+
+```bash
+bundle exec cap deploy:auto_cleanup -s cleanup_threshold=<number>
+```
+
 # Capistrano integration
 [Sidekiq](https://github.com/mperham/sidekiq/wiki/Deployment#capistrano)
