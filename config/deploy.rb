@@ -23,6 +23,9 @@ set :scm, :git # You can set :scm explicitly or Capistrano will make an intellig
 set :repository,  "git@gitserver.com:repo.git"
 set :ssh_options, { forward_agent: true}
 
+#Set number of releases you want to keep after cleanup
+set :keep_releases, 10
+
 namespace :deploy do
   desc "Create and set permittions for capistrano directory structure."
   task :setup, roles: :app do
