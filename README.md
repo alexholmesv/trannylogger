@@ -149,7 +149,7 @@ bundle exec cap <stage> deploy
 If you want to force the deploy, use the force parameter:
 
 ```bash
-cap <stage> deploy -s forced=true
+bundle exec cap <stage> deploy -s forced=true
 ```
 
 To list the tasks we can execute with Capistrano:
