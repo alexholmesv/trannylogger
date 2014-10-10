@@ -41,7 +41,13 @@ namespace :deploy do
 
   desc "Copy cached version to new release path"
   task :copy_cache, roles: :app do
-    run "cd #{shared_path}/cached_copy && git fetch && git checkout #{branch} && git pull origin #{branch} && cp -RPp #{shared_path}/cached_copy #{deploy_to}/releases/#{release_name}"
+    forced_deploy = fetch(:forced, false)
+
+    if forced_deploy == true
+      run "cd #{shared_path}/cached_copy && git fetch && git checkout #{branch} && git reset --hard origin/#{branch} && cp -RPp #{shared_path}/cached_copy #{deploy_to}/releases/#{release_name}"
+    else
+      run "cd #{shared_path}/cached_copy && git fetch && git checkout #{branch} && git pull origin #{branch} && cp -RPp #{shared_path}/cached_copy #{deploy_to}/releases/#{release_name}"
+    end
   end
 
   desc "Clone project in a new release path and install gems in Gemfile."
