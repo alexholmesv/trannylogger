@@ -8,10 +8,7 @@ set :deploy_to, "/home/deploy/#{rails_env}.#{app_stage}"
 
 #Database settings
 set :database_adapter, "postgresql"
-set :database_username, "postgres"
-set :database_password, "postgres"
 set :database_pool, "25"
-set :database_host, "localhost"
 
 #Thin server settings
 set :server_port, "3000"

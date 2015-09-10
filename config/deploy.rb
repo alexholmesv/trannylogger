@@ -74,11 +74,11 @@ namespace :deploy do
     db_config = <<-EOF
 #{rails_env}:
   adapter:  #{database_adapter}
-  database: #{application}_#{rails_env}
-  host:     #{database_host}
+  database: \<\%\= ENV\[\'RDS_DBNAME\'\] \%\>
+  host:     \<\%\= ENV\[\'RDS_HOSTNAME\'\] \%\>
   pool:     #{database_pool}
-  username: #{database_username}
-  password: #{database_password}
+  username: \<\%\= ENV\[\'RDS_USERNAME\'\] \%\>
+  password: \<\%\= ENV\[\'RDS_PASSWORD\'\] \%\>
 EOF
 
     run "rm -f #{shared_path}/config/database.yml"
