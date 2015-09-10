@@ -119,6 +119,8 @@ EOF
   :concurrency: 25
 :queues:
   - default
+  - webpay
+  - mailers
 EOF
 
     run "rm -f #{shared_path}/config/sidekiq.yml"
