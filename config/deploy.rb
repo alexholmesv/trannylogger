@@ -85,31 +85,6 @@ EOF
     put db_config, "#{shared_path}/config/database.yml"
   end
 
-  desc "Create thin configuration yaml in shared path."
-  task :thin_configure, roles: :app do
-    thin_config = <<-EOF
----
-chdir:                #{current_path}
-environment:          #{rails_env}
-address:              0.0.0.0
-port:                 #{server_port}
-timeout:              #{server_timeout}
-log:                  #{shared_path}/log/thin.log
-pid:                  #{shared_path}/pids/thin.pid
-max_conns:            #{server_max_conns}
-max_persistent_conns: #{server_max_persistent_conns}
-require:              []
-
-wait:                 #{server_wait}
-servers:              #{server_threads}
-daemonize:            true
-onebyone:             true
-EOF
-
-    run "rm -f #{shared_path}/config/thin.yml"
-    put thin_config, "#{shared_path}/config/thin.yml"
-  end
-
   desc "Create sidekiq configuration yaml in shared_path"
   task :sidekiq_configure, roles: :app do
     sidekiq_config = <<-EOF
@@ -149,19 +124,19 @@ EOF
     run "cd #{latest_release} && bundle exec rake db:setup RAILS_ENV=#{rails_env}"
   end
 
-  desc "Start Thin server."
+  desc "Start Passenger Server."
   task :start, roles: :app do
-    run "cd #{current_path} && bundle exec thin start -C #{shared_path}/config/thin.yml"
+    run "cd #{current_path} && rvmsudo `tail -n +2 /etc/environment | paste -s -d ' ' | sed -e 's/\"//g'` passenger start --environment #{rails_env} --user #{user} --load-shell-envvars --log-file #{shared_path}/log/passenger.3000.log --pid-file #{shared_path}/log/passenger.3000.pid --daemonize"
   end
 
-  desc "Stop Thin server."
+  desc "Stop Passenger server."
   task :stop, roles: :app do
-    run "cd #{current_path} && bundle exec thin stop -C #{shared_path}/config/thin.yml"
+    run "cd #{current_path} && rvmsudo passenger stop --pid-file #{shared_path}/log/passenger.3000.pid"
   end
 
-  desc "Restart Thin server."
+  desc "Restart Passenger server."
   task :restart, roles: :app do
-    run "cd #{current_path} && bundle exec thin restart -C #{shared_path}/config/thin.yml"
+    run "passenger-config restart-app #{latest_release}"
   end
 
   desc "Reload database with seed data"
@@ -194,7 +169,7 @@ EOF
     db_setup
     rake.migrate
     rake.assets
-    thin_configure
+    rake.assets_sync
     sidekiq_configure
     sidekiq_symlink
     start
@@ -207,8 +182,10 @@ EOF
     dir_symlink
     rake.migrate
     rake.assets
+    rake.assets_sync
     sidekiq_symlink
-    restart
+    stop
+    start
   end
 end
 
