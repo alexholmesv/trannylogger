@@ -22,6 +22,7 @@ set :group, "deploy"
 set :scm, :git # You can set :scm explicitly or Capistrano will make an intelligent guess based on known version control directory names
 set :repository,  "git@gitserver.com:repo.git"
 set :ssh_options, { forward_agent: true}
+default_run_options[:env] = {'rvmsudo_secure_path' => 1}
 
 #Set number of releases you want to keep after cleanup
 set :keep_releases, 10
@@ -168,6 +169,7 @@ EOF
     dir_symlink
     db_setup
     rake.migrate
+    rake.install
     rake.assets
     rake.assets_sync
     sidekiq_configure
@@ -181,6 +183,7 @@ EOF
     db_symlink
     dir_symlink
     rake.migrate
+    rake.install
     rake.assets
     rake.assets_sync
     sidekiq_symlink
@@ -190,6 +193,11 @@ EOF
 end
 
 namespace :rake do
+  desc 'install asset dependencies'
+  task :install, roles: :app do
+    run "cd #{latest_release} && bower install --no-color --no-interactive --force-latest"
+  end
+
   desc "Run assets:precompile rake task for the deployed application."
   task :assets, roles: :app do
     run "cd #{latest_release} && bundle exec rake assets:precompile RAILS_ENV=#{rails_env} RAILS_GROUPS=assets #{bundle_flags}"
@@ -198,6 +206,11 @@ namespace :rake do
   desc "Run the migrate rake task."
   task :migrate, roles: :app do
     run "cd #{latest_release} && bundle exec rake RAILS_ENV=#{rails_env} db:migrate #{bundle_flags}"
+  end
+
+  desc "AssetSync: Sync assets to S3"
+    task :assets_sync, roles: :app do
+  run "cd #{latest_release} && bundle exec rake assets:sync RAILS_ENV=#{rails_env} RAILS_GROUPS=assets #{bundle_flags}"
   end
 end
 
