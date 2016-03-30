@@ -137,7 +137,8 @@ EOF
 
   desc "Restart Passenger server."
   task :restart, roles: :app do
-    run "passenger-config restart-app #{latest_release}"
+    start
+    stop
   end
 
   desc "Reload database with seed data"
@@ -187,8 +188,7 @@ EOF
     rake.assets
     rake.assets_sync
     sidekiq_symlink
-    stop
-    start
+    restart
   end
 end
 
@@ -224,6 +224,6 @@ namespace :rails do
 end
 
 before "deploy:cold", "deploy:setup"
-before "deploy:start", "deploy:create_symlink"
-before "deploy:restart", "deploy:create_symlink"
+
+after "deploy:sidekiq_symlink", "deploy:create_symlink"
 after "deploy", "deploy:auto_cleanup"
