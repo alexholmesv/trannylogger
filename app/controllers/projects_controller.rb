@@ -1,6 +1,6 @@
 class ProjectsController < ApplicationController
   before_action :set_project, only: [:show, :edit, :update, :destroy]
-
+  before_action :set_clients, only: [:new, :create, :update, :edit]
   # GET /projects
   # GET /projects.json
   def index
@@ -15,6 +15,7 @@ class ProjectsController < ApplicationController
   # GET /projects/new
   def new
     @project = Project.new
+    
   end
 
   # GET /projects/1/edit
@@ -63,6 +64,10 @@ class ProjectsController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
+    def set_clients
+      @clients = Client.all
+    end
+
     def set_project
       @project = Project.find(params[:id])
     end

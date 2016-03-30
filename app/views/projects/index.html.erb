@@ -2,7 +2,7 @@
 
 <h1>Listing Projects</h1>
 
-<table>
+<table class="table table-bordered">
   <thead>
     <tr>
       <th>Client</th>
@@ -16,10 +16,10 @@
     </tr>
   </thead>
 
-  <tbody>
+  <tbody class="table-striped">
     <% @projects.each do |project| %>
       <tr>
-        <td><%= project.client %></td>
+        <td><%= project.client.name %> </td>  
         <td><%= project.name %></td>
         <td><%= project.date_received %></td>
         <td><%= project.words %></td>

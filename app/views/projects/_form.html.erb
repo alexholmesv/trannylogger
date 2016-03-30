@@ -13,7 +13,8 @@
 
   <div class="field">
     <%= f.label :client_id %><br>
-    <%= f.text_field :client_id %>
+    <%= f.select :client_id, @clients.map { |m| [m.name, m.id] }%>
+    <%= link_to 'Nuevo Cliente', new_client_path %>
   </div>
   <div class="field">
     <%= f.label :name %><br>
