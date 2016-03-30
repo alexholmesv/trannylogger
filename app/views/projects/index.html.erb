@@ -1,5 +1,6 @@
 <p id="notice"><%= notice %></p>
 
+<div class="continaer">
 <h1>Translation Projects</h1>
 
 <%= link_to new_project_path do %>
@@ -33,9 +34,9 @@
         <td><%= project.name %></td>
         <td><%= project.date_received %></td>
         <td><%= project.words %></td>
-        <td><%= project.rate %></td>
-        <td><%= project.extras %></td>
-        <td><%= project.total %></td>
+        <td><%= number_to_currency(project.rate, precision:0) %></td>
+        <td><%= number_to_currency(project.extras, precision:0) %></td>
+        <td><%= number_to_currency(project.total, precision:0) %></td>
         <td class="icon-center"> <%= show_sent_icon(project) %></td>
         <td><%= project.invoice_number %></td>
         <td>
@@ -59,7 +60,5 @@
   </tbody>
 </table>
 
-<br>
-
-
+</div>
 

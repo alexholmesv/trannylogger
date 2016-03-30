@@ -27,3 +27,29 @@
 	background-color:darkred;
 	color:white;
 }
+
+#bg-main {
+	background: url("words.jpg"); 
+	no-repeat center center fixed;
+	background-size: cover;
+	min-width: 50%;
+	min-height 50%;
+}
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto 
+  }
+
+.slider-img {
+	max-width: 70%;
+	max-height: 400px;
+}
+
+.center-content {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
