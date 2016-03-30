@@ -1,6 +1,7 @@
 class ProjectsController < ApplicationController
   before_action :set_project, only: [:show, :edit, :update, :destroy]
   before_action :set_clients, only: [:new, :create, :update, :edit]
+  before_action :set_translators, only: [:new, :create, :update, :edit]
   # GET /projects
   # GET /projects.json
   def index
@@ -29,7 +30,7 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       if @project.save
-        format.html { redirect_to @project, notice: 'Project was successfully created.' }
+        format.html { redirect_to projects_path, notice: 'Project was successfully created.' }
         format.json { render :show, status: :created, location: @project }
       else
         format.html { render :new }
@@ -43,7 +44,7 @@ class ProjectsController < ApplicationController
   def update
     respond_to do |format|
       if @project.update(project_params)
-        format.html { redirect_to @project, notice: 'Project was successfully updated.' }
+        format.html { redirect_to projects_path, notice: 'Project was successfully updated.' }
         format.json { render :show, status: :ok, location: @project }
       else
         format.html { render :edit }
@@ -68,12 +69,16 @@ class ProjectsController < ApplicationController
       @clients = Client.all
     end
 
+    def set_translators
+      @translators = Translator.all
+    end
+
     def set_project
       @project = Project.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def project_params
-      params.require(:project).permit(:client_id, :name, :date_received, :words, :rate, :extras, :total, :invoice_number, :sent)
+      params.require(:project).permit(:client_id, :name, :date_received, :words, :rate, :extras, :total, :invoice_number, :sent, :translator_id)
     end
 end

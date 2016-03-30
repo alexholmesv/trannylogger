@@ -11,10 +11,18 @@
     </div>
   <% end %>
 
+<form>
+<div class="form-inline">
+<div class="form-group">
   <div class="field">
     <%= f.label :client_id %><br>
     <%= f.select :client_id, @clients.map { |m| [m.name, m.id] }%>
-    <%= link_to 'Nuevo Cliente', new_client_path %>
+    <%= link_to 'New Client', new_client_path %>
+  </div>
+  <div class="field">
+    <%= f.label :translator_id %><br>
+    <%= f.select :translator_id, @translators.map { |m| [m.name, m.id] }%>
+    <%= link_to 'New Translator', new_translator_path %>
   </div>
   <div class="field">
     <%= f.label :name %><br>
@@ -40,7 +48,18 @@
     <%= f.label :total %><br>
     <%= f.text_field :total %>
   </div>
+  <div class="field">
+    <%= f.label :sent, "Has this project been sent to the client?" %>
+    <%= f.check_box :sent %>
+  </div>
+  <div class="field">
+    <%= f.label :invoice_number, "Número de boleta o factura" %><br>
+    <%= f.text_field :invoice_number %>
+  </div>
   <div class="actions">
     <%= f.submit %>
   </div>
+  </div>
+  </div>
+</form>
 <% end %>
