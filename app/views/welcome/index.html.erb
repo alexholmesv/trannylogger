@@ -1,76 +1,31 @@
 <body id="bg-main">
 <div class="container-fluid">
-	<div class="row">
-		<div class="col-md-12">
-			<div class="carousel slide" id="carousel-314099">
-				<ol class="carousel-indicators">
-					<li data-slide-to="0" data-target="#carousel-314099">
-					</li>
-					<li data-slide-to="1" data-target="#carousel-314099" class="active">
-					</li>
-					<li data-slide-to="2" data-target="#carousel-314099">
-					</li>
-				</ol>
-				<div class="carousel-inner">
-					<div class="item">
-						<%= image_tag "surf.jpg", class:"center slider-img" %>
-						<div class="carousel-caption">
-							<h1>
-								TrannyLogger
-							</h1>
-							<p>
-								The tool that lets you log and sort your trannies.
-							</p>
-						</div>
-					</div>
-					<div class="item active">
-						<%= image_tag "mountains.jpg", class:"center slider-img" %>
-						<div class="carousel-caption">
-							<h4>
-								Second Thumbnail label
-							</h4>
-							<p>
-								Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
-							</p>
-						</div>
-					</div>
-					<div class="item">
-						<%= image_tag "steps.jpg", class:"center slider-img" %>
-						<div class="carousel-caption">
-							<h4>
-								Third Thumbnail label
-							</h4>
-							<p>
-								Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
-							</p>
-						</div>
-					</div>
-				</div> <a class="left carousel-control" href="#carousel-314099" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a> <a class="right carousel-control" href="#carousel-314099" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
-			</div>
+	<div class="row" style="margin-top:100px">
+		<div class="col-md-12 center center-content">
+			<%= image_tag "logo-big.png", style:"max-width:500px" %>
 		</div>
 	</div>
 	
-	<br>
-	<div class="container-fluid center-content">
+	<div class="container-fluid center-content" style="margin-top:100px">
 	<div class="row">
 		<div class="col-md-4">
 			<div>
-			<%= link_to projects_path do %>
-            <div class="btn btn-success">View Projects</div>
+			<%= link_to clients_path do %>
+            <div class="btn btn-success">Clients</div>
             <% end %>
 			</div>
 		</div>
 		<div class="col-md-4">
-		<div>
-			<%= link_to clients_path do %>
-            <div class="btn btn-success">View Clients</div>
+			<div>
+			<%= link_to projects_path do %>
+            <div class="btn btn-warning">Projects</div>
             <% end %>
-			</div>
+			</div>	
 		</div>
 		<div class="col-md-4">
 		<div>
 			<%= link_to translators_path do %>
-            <div class="btn btn-success">View Colleagues</div>
+            <div class="btn btn-success">Translators</div>
             <% end %>
 			</div>
 		</div>
