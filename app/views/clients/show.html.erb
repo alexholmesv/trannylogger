@@ -20,7 +20,9 @@
   <%= @client.rut %>
 </p>
 
-<%= link_to 'Editar', edit_client_path(@client) %> |
-<%= link_to 'Volver a Nuevo Proyecto', new_project_path %>
-<%= link_to 'Volver a clientes', clients_path %>
+<%= link_to 'Back to Create New Project', new_project_path %>
+<br>
+<%= link_to 'Edit', edit_client_path(@client) %> |
+
+<%= link_to 'Back to Clients index', clients_path %>
 
