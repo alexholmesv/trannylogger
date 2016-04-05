@@ -1,13 +1,20 @@
 <p id="notice"><%= notice %></p>
+<div class="container">
 
-<h1>Listing Translators</h1>
+<h1>Translators</h1>
 
-<table>
+<div class="margin-logo pull-right">
+<%= link_to " New Translator", new_translator_path, class:"btn btn-warning"%>
+</div>
+
+<table class="table table-condensed">
   <thead>
     <tr>
       <th>Name</th>
       <th>Email</th>
+      <th> Last assigned Project</th>
       <th colspan="3"></th>
+      
     </tr>
   </thead>
 
@@ -16,6 +23,18 @@
       <tr>
         <td><%= translator.name %></td>
         <td><%= translator.email %></td>
+        <td> <span class="bold"> <%= link_to translator.last_project_name, translator.last_project, class:"bold"%></span>
+          <a class="showall-title" role="button" data-toggle="collapse" href="#collapseExample<%= translator.id %>" aria-expanded="false" aria-controls="collapseExample"> Show all projects
+              </a>
+              <div class="collapse" id="collapseExample<%= translator.id %>">
+                <div class="well">
+                <div><% translator.projects.each do |project|%>
+                       <%= link_to project.name, project %>
+                    <% end %>
+                </div>
+              </div>
+           
+
         <td><%= link_to 'Show', translator %></td>
         <td><%= link_to 'Edit', edit_translator_path(translator) %></td>
         <td><%= link_to 'Destroy', translator, method: :delete, data: { confirm: 'Are you sure?' } %></td>
@@ -25,5 +44,3 @@
 </table>
 
 <br>
-
-<%= link_to 'New Translator', new_translator_path %>

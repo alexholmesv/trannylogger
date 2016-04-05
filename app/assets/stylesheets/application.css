@@ -95,3 +95,12 @@
  	zoom:1.9;
  	margin-left:10px;
  }
+
+ .showall-title {
+  margin-left:20px;
+  font-style: italic;
+ }
+
+ .bold {
+  font-style: bold;
+ }
