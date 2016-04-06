@@ -27,6 +27,17 @@ default_run_options[:env] = {'rvmsudo_secure_path' => 1}
 #Set number of releases you want to keep after cleanup
 set :keep_releases, 10
 
+# Slack Notification options
+# Don't forget to uncomment the hooks at the end of this file
+#
+# Slack Webhook Url. It works, so don't change it.
+# set :slack_webhook_url, 'https://hooks.slack.com/services/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'
+# Slack channel name
+# set :slack_room, '#channel-name'
+# set :slack_app_name, fetch(:application)
+# By default it uses your shell username, but you can change that
+# set :deployer, 'username'
+
 namespace :deploy do
   desc "Create and set permittions for capistrano directory structure."
   task :setup, roles: :app do
@@ -227,3 +238,8 @@ before "deploy:cold", "deploy:setup"
 
 after "deploy:sidekiq_symlink", "deploy:create_symlink"
 after "deploy", "deploy:auto_cleanup"
+
+# Slack Notification hooks
+# before 'deploy', 'slack:starting'
+# after  'deploy', 'slack:finished'
+# before 'deploy:rollback', 'slack:failed'
