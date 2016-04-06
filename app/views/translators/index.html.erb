@@ -1,8 +1,8 @@
-<p id="notice"><%= notice %></p>
+
 <div class="container">
 
 <h1>Translators</h1>
-
+<p id="notice"><%= notice %></p>
 <div class="margin-logo pull-right">
 <%= link_to " New Translator", new_translator_path, class:"btn btn-warning"%>
 </div>
@@ -24,7 +24,7 @@
         <td><%= translator.name %></td>
         <td><%= translator.email %></td>
         <td> <span class="bold"> <%= link_to translator.last_project_name, translator.last_project, class:"bold"%></span>
-          <a class="showall-title" role="button" data-toggle="collapse" href="#collapseExample<%= translator.id %>" aria-expanded="false" aria-controls="collapseExample"> Show all projects
+          <td><a class="showall-title" role="button" data-toggle="collapse" href="#collapseExample<%= translator.id %>" aria-expanded="false" aria-controls="collapseExample"> <span class="glyphicon glyphicon-plus"></span>  Show all projects
               </a>
               <div class="collapse" id="collapseExample<%= translator.id %>">
                 <div class="well">
@@ -33,7 +33,7 @@
                     <% end %>
                 </div>
               </div>
-           
+           </td>
 
         <td><%= link_to 'Show', translator %></td>
         <td><%= link_to 'Edit', edit_translator_path(translator) %></td>
