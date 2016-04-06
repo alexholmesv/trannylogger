@@ -27,6 +27,9 @@ default_run_options[:env] = {'rvmsudo_secure_path' => 1}
 #Set number of releases you want to keep after cleanup
 set :keep_releases, 10
 
+# Git Tags
+set :tagging_format, ':rails_env_:release'
+
 # Slack Notification options
 # Don't forget to uncomment the hooks at the end of this file
 #
