@@ -10,6 +10,8 @@ GEM
     capistrano-sidekiq (0.3.8)
       capistrano
       sidekiq
+    capistrano-tagging (0.1.0)
+      capistrano (~> 2.0)
     celluloid (0.15.2)
       timers (~> 1.1.0)
     connection_pool (2.0.0)
@@ -42,5 +44,6 @@ PLATFORMS
 DEPENDENCIES
   capistrano (~> 2.15)
   capistrano-sidekiq
+  capistrano-tagging
   rvm-capistrano
   to_boolean
