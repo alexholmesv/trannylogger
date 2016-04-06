@@ -23,14 +23,20 @@
  
 
 <%= render "layouts/navbar" %>
-<%= render "layouts/sidebar" %>
+
+<% unless ( params[:controller] == "welcome" and params[:action] == "index") %>
+	<%= render "layouts/sidebar" %>
+	<div id="wrapper">
+ <% end %>
 
 
- <div id="wrapper">
+
+
+ 
 
  <p class="notice"><%= notice %></p>
  <p class="alert"><%= alert %></p>
- 
+
 <!-- This container is for the entire content of the app -->
 
 <!-- Latest compiled and minified JavaScript -->

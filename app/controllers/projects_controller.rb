@@ -2,6 +2,7 @@ class ProjectsController < ApplicationController
   before_action :set_project, only: [:show, :edit, :update, :destroy]
   before_action :set_clients, only: [:new, :create, :update, :edit]
   before_action :set_translators, only: [:new, :create, :update, :edit]
+  before_action :authenticate_user!
   
   # GET /projects
   # GET /projects.json

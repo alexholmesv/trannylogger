@@ -1,5 +1,6 @@
 class TranslatorsController < ApplicationController
   before_action :set_translator, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_user!
 
   # GET /translators
   # GET /translators.json
