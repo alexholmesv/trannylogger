@@ -34,7 +34,7 @@ set :keep_releases, 10
 # set :slack_webhook_url, 'https://hooks.slack.com/services/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'
 # Slack channel name
 # set :slack_room, '#channel-name'
-# set :slack_app_name, "application-name"
+# set :slack_app_name, fetch(:application)
 # By default it uses your shell username, but you can change that
 # set :deployer, 'username'
 
