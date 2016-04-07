@@ -8,22 +8,24 @@
 <%= link_to " New Project", new_project_path, class:"btn btn-primary"%>
 </div>
 
-<table id="projects" class="table table-condensed">
+<table id="projects" class="display table table-hover table-striped table-bordered table-condensed" cellspacing="0" width="100%">
   <thead>
     <tr>
-      <th>Client</th>
-      <th>Translator</th>
-      <th>Name</th>
-      <th>Date received</th>
-      <th>Words</th>
-      <th>Rate</th>
-      <th>Extras</th>
-      <th>Total</th>
-      <th>¿Sent to client?</th>
-      <th>Invoice No.</th>
-      <th></th>
-      <th></th>
-      <th></th>
+      <th class="h5 tablefont">Client</th>
+      <th class="h5 tablefont">Translator</th>
+      <th class="h5 tablefont">Name</th>
+      <th class="h5 tablefont">Date received</th>
+      <th class="h5 tablefont">Words</th>
+      <th class="h5 tablefont">Rate</th>
+      <th class="h5 tablefont">Extras</th>
+      <th class="h5 tablefont">Total</th>
+      <th class="h5 tablefont">Sent to client?</th>
+      <th class="h5 tablefont">Paid by client?</th>
+      <th class="h5 tablefont">Paid translator?</th>
+      <th class="h5 tablefont">Invoice No.</th>
+      <th class="h5 tablefont">Show</th>
+      <th class="h5 tablefont">Edit</th>
+      <th class="h5 tablefont">Delete</th>
     </tr>
   </thead>
 
@@ -41,21 +43,29 @@
         <td><%= number_to_currency(project.extras, precision:0) %></td>
         <td><%= number_to_currency(project.total, precision:0) %></td>
         <td class="icon-center"> <%= show_sent_icon(project) %></td>
-        <td><%= project.invoice_number %></td>
+        <td class="icon-center"> <%= show_paid_icon(project.customer_payment) %></td>
+        <td class="icon-center"> <%= show_paid_icon(project.translator_payment) %></td>
+        <td> 
+          <% if !project.invoice_number.nil? %>
+            <%= project.invoice_number %>
+          <% else %>
+            <span class="h5"><%= "No invoice sent" %></span>
+           <% end  %>           
+          </td>
         <td>
             <%= link_to project do %>
-               <div class="fa fa-eye fa-2x"></div>
+               <div class="fa fa-eye"></div>
             <% end %>
        
          </td>
         <td>
           <%= link_to edit_project_path(project) do%>
-            <div class="fa fa-pencil-square-o fa-2x"></div> 
+            <div class="fa fa-pencil-square-o"></div> 
             <% end %>
             </td>
         <td>
             <%= link_to project, method: :delete, data: { confirm: 'Are you sure?' } do %>
-            <div class="fa fa-trash fa-2x"></div>
+            <div class="fa fa-trash"></div>
             <% end %>
          </td>
        

@@ -83,6 +83,17 @@
   position:relative;
 }
 
+.card-transparent {
+  background-color: #fff;
+  padding: 20px;
+  margin: 10px;
+  width: 60%;
+  min-width: 200px;
+  flex: 0 0 auto;
+  position:relative;
+}
+
+
 .card:hover {
 /*  border-left: 16px solid #1f5081;*/
   transform: scale(1.01)
@@ -105,3 +116,11 @@
  .bold {
   font-style: bold;
  }
+
+ .tablefont {
+  font-size: 15px;
+ }
+
+ div.container {
+        width: 90%;
+    }

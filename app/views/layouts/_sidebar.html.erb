@@ -1,3 +1,15 @@
+
+
+<!-- cut and paste this in application.html.erb to enable sidebar -->
+<% unless ( params[:controller] == "welcome" and params[:action] == "index") %>
+    <%= render "layouts/sidebar" %>
+    <div id="wrapper">
+ <% end %>
+
+            <div class="container">
+        <%= flash_messages %>
+        </div><!-- /container -->
+
 <!-- Sidebar -->
 
         <div id="sidebar-wrapper">
