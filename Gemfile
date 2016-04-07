@@ -34,9 +34,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
-group :assets do
-	gem 'jquery-datatables-rails','~> 3.3.0'
-end
+gem 'jquery-datatables-rails','~> 3.3.0'
 
 
 group :development, :test do
