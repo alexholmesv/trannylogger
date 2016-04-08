@@ -1,0 +1,16 @@
+
+          <td><a class="showall-title" role="button" data-toggle="collapse" href="#collapseExample<%= translator.id %>" aria-expanded="false" aria-controls="collapseExample"> <span class="glyphicon glyphicon-plus"></span>  Show all projects
+              </a>
+              <div class="collapse" id="collapseExample<%= translator.id %>">
+                <div class="well">
+                <div><% translator.projects.each do |project|%>
+                       <%= link_to project.name, project %>
+                    <% end %>
+                </div>
+              </div>
+           </td>
+          <td>
+             <!-- Button trigger modal -->
+            <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#myModalForTranslators">
+              View projects
+            </button>

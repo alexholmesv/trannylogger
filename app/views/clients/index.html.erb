@@ -8,17 +8,17 @@
 </div>
 
 
-<table id="clients" class="table table-condensed">
+<table id="clients" class="display table table-hover table-striped table-bordered table-condensed">
   <thead>
     <tr>
-      <th class="h4 tablefont">Name</th>
-      <th class="h4 tablefont">Email</th>
-      <th class="h4 tablefont">Address</th>
-      <th class="h4 tablefont">Rut</th>
-      <th class="h4 tablefont">Projects</th>
-      <th class="h4 tablefont"></th>
-      <th class="h4 tablefont"></th>
-      <th class="h4 tablefont"></th>
+      <th class="h5 tablefont">Name</th>
+      <th class="h5 tablefont">Email</th>
+      <th class="h5 tablefont">Address</th>
+      <th class="h5 tablefont">Rut</th>
+      <th class="h5 tablefont">Projects</th>
+      <th class="h5 tablefont"></th>
+      <th class="h5 tablefont"></th>
+      <th class="h5 tablefont"></th>
     </tr>
   </thead>
 
@@ -58,17 +58,17 @@
         
         <td>
         <%= link_to client do %>
-               <div class="fa fa-eye fa-2x"></div>
+               <div class="fa fa-eye"></div>
             <% end %>
         </td>
         <td>
           <%= link_to edit_client_path(client) do%>
-            <div class="fa fa-pencil-square-o fa-2x"></div> 
+            <div class="fa fa-pencil-square-o"></div> 
             <% end %>
         </td>
         <td>
           <%= link_to client, method: :delete, data: { confirm: 'Are you sure?' } do %>
-            <div class="fa fa-trash fa-2x"></div>
+            <div class="fa fa-trash"></div>
             <% end %>
         </td>
       </tr>

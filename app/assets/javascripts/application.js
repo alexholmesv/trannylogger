@@ -15,5 +15,17 @@
 //= require dataTables/jquery.dataTables
 //= require dataTables/bootstrap/3/jquery.dataTables.bootstrap
 //= require dataTables/jquery.dataTables
-//= require turbolinks
 //= require_tree .
+
+
+$(document).ready(function(){
+	$('input:checkbox').bootstrapSwitch({
+			onText:"Yes",
+			offText:"No"
+		});
+	// $("[name='sentToClient']").bootstrapSwitch({
+	// 		onText:"Sent",
+	// 		offText:"Unsent"
+	// 	});
+
+	});

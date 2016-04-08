@@ -77,24 +77,21 @@
   <div class="card">
     <div class="field">
       <h3>Has this project been sent to the client?</h3>
-      <%= f.label :sent, "Check if sent", class:"h4" %>
-      <%= f.check_box :sent, class:"big-checkbox" %>
+      <div> <%= f.check_box :sent, name:"sentToClient"%></div>
     </div>
   </div>
   <div class="card">
     <div class="field">
-      <h3>Invoice Number</h3>
-      <%= f.text_field :invoice_number, class:"form-control", placeholder:"Leave blank if not invoiced yet" %>
+      <h3>Client Invoice Number</h3>
+      <%= f.text_field :invoice_number, class:"form-control", placeholder:"Leave blank if not invoiced to client yet" %>
     </div>
 
     <div class="field">
       <h3>Has this project been paid by the client?</h3>
-      <%= f.label :customer_payment, "Check if paid", class:"h4" %>
       <%= f.check_box :customer_payment, class:"big-checkbox" %>
     </div>
     <div class="field">
       <h3>Has the translator been paid for this project?</h3>
-      <%= f.label :translator_payment, "Check if paid", class:"h4" %>
       <%= f.check_box :translator_payment, class:"big-checkbox" %>
     </div>
     <div>

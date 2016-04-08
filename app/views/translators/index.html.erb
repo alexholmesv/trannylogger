@@ -7,16 +7,16 @@
 <%= link_to " New Translator", new_translator_path, class:"btn btn-warning"%>
 </div>
 
-<table id="translators" class="table table-condensed">
+<table id="translators" class="display table table-hover table-striped table-bordered table-condensed">
   <thead>
     <tr>
-      <th class="h4 tablefont">Name</th>
-      <th class="h4 tablefont">Email</th>
-      <th class="h4 tablefont"> Last assigned Project</th>
-      <th class="h4 tablefont"></th>
-      <th class="h4 tablefont"></th>
-      <th class="h4 tablefont"></th>
-      <th class="h4 tablefont"></th>
+      <th class="h5 tablefont">Name</th>
+      <th class="h5 tablefont">Email</th>
+      <th class="h5 tablefont">Last assigned Project</th>
+      <th class="h5 tablefont">Assigned Projects</th>
+      <th class="h5 tablefont"></th>
+      <th class="h5 tablefont"></th>
+      <th class="h5 tablefont"></th>
     </tr>
   </thead>
 
@@ -25,21 +25,48 @@
       <tr>
         <td><%= translator.name %></td>
         <td><%= translator.email %></td>
-        <td> <span class="bold"> <%= link_to translator.last_project_name, translator.last_project, class:"bold"%></span>
-          <td><a class="showall-title" role="button" data-toggle="collapse" href="#collapseExample<%= translator.id %>" aria-expanded="false" aria-controls="collapseExample"> <span class="glyphicon glyphicon-plus"></span>  Show all projects
-              </a>
-              <div class="collapse" id="collapseExample<%= translator.id %>">
-                <div class="well">
-                <div><% translator.projects.each do |project|%>
-                       <%= link_to project.name, project %>
-                    <% end %>
+        <td><span class="bold"> <%= link_to translator.last_project_name, translator.last_project, class:"bold"%></span></td>
+        <td> 
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#myModalForTranslators">
+              View all assigned projects
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="myModalForTranslators" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Translator Projects</h4>
+                  </div>
+                  <div class="modal-body">
+                    <div><% translator.projects.each do |project|%>
+                       <%= link_to project.name, project, class:"card" %>
+                     <% end %>
+                    </div>
+                  </div>
                 </div>
               </div>
-           </td>
+            </div>
 
-        <td><%= link_to 'Show', translator %></td>
-        <td><%= link_to 'Edit', edit_translator_path(translator) %></td>
-        <td><%= link_to 'Destroy', translator, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+          </td>
+
+        <td>
+        <%= link_to translator do %>
+               <div class="fa fa-eye"></div>
+            <% end %>
+        </td>
+        <td>
+          <%= link_to edit_translator_path(translator) do%>
+            <div class="fa fa-pencil-square-o"></div> 
+            <% end %>
+        </td>
+        <td>
+          <%= link_to translator, method: :delete, data: { confirm: 'Are you sure?' } do %>
+            <div class="fa fa-trash"></div>
+            <% end %>
+        </td>
       </tr>
     <% end %>
   </tbody>

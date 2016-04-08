@@ -6,4 +6,3 @@ jQuery ->
 	$('#projects').dataTable()
 
 
-
