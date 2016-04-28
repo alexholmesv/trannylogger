@@ -151,8 +151,8 @@ EOF
 
   desc "Restart Passenger server."
   task :restart, roles: :app do
-    start
     stop
+    start
   end
 
   desc "Reload database with seed data"
