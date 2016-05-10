@@ -96,9 +96,13 @@
     </div>
     <div>
   </div>
-  </div>
+  </div>           
     <div class="actions card-transparent">
-            <%= f.submit class:"btn btn-primary pull-right" %>
+          <span>  <%= f.submit class:"btn btn-primary pull-right" %> </span>
+              <%= link_to projects_path do %>
+            <span class="btn btn-danger pull-right" style="margin-right: 20px">Cancel</span>
+            <% end %>
+            
         <% end %>
       </div>
   </div>
