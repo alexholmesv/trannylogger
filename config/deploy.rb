@@ -2,17 +2,17 @@
 set :stages, %w(production staging)
 set :default_stage, "staging"
 require 'capistrano/ext/multistage'
-require 'rvm/capistrano'
-require 'capistrano/sidekiq'
+#require 'rvm/capistrano'
+#require 'capistrano/sidekiq'
 
 set :rvm_type, :user
-set :rvm_ruby_version, 'ruby-version@gemset'
+set :rvm_ruby_version, 'ruby-2.2.1@trannylogger'
 set :bundle_dir, ''
 set :bundle_flags, '--quiet'
 
 #Set your application name and domain
-set :application, "my_app"
-set :app_stage, "myapplication.com"
+set :application, ""
+set :app_stage, "trannylogger"
 
 #Set your user and group for shell commands
 set :user, "deploy"
@@ -20,7 +20,7 @@ set :group, "deploy"
 
 #Set your Git repo
 set :scm, :git # You can set :scm explicitly or Capistrano will make an intelligent guess based on known version control directory names
-set :repository,  "git@gitserver.com:repo.git"
+set :repository,  "https://github.com/alexholmesv/trannylogger.git"
 set :ssh_options, { forward_agent: true}
 default_run_options[:env] = {'rvmsudo_secure_path' => 1}
 
@@ -89,32 +89,15 @@ namespace :deploy do
     db_config = <<-EOF
 #{rails_env}:
   adapter:  #{database_adapter}
-  database: \<\%\= ENV\[\'RDS_DBNAME\'\] \%\>
-  host:     \<\%\= ENV\[\'RDS_HOSTNAME\'\] \%\>
+  database: #{database_dbname}
+  host:     #{database_host}
   pool:     #{database_pool}
-  username: \<\%\= ENV\[\'RDS_USERNAME\'\] \%\>
-  password: \<\%\= ENV\[\'RDS_PASSWORD\'\] \%\>
+  username: #{database_user}
+  password: #{database_pass}
 EOF
 
     run "rm -f #{shared_path}/config/database.yml"
     put db_config, "#{shared_path}/config/database.yml"
-  end
-
-  desc "Create sidekiq configuration yaml in shared_path"
-  task :sidekiq_configure, roles: :app do
-    sidekiq_config = <<-EOF
----
-:pidfile: #{sidekiq_pid}
-#{rails_env}:
-  :concurrency: 25
-:queues:
-  - default
-  - webpay
-  - mailers
-EOF
-
-    run "rm -f #{shared_path}/config/sidekiq.yml"
-    put sidekiq_config, "#{shared_path}/config/sidekiq.yml"
   end
 
   desc "Make symlink for database yaml."
@@ -127,11 +110,6 @@ EOF
     run "ln -snf #{shared_path}/assets #{latest_release}/public/assets"
     run "ln -snf #{shared_path}/log #{latest_release}/log"
     run "ln -snf #{shared_path}/system #{latest_release}/public/system"
-  end
-
-  desc "Make symlink for sidekiq yaml"
-  task :sidekiq_symlink, roles: :app do
-    run "ln -snf #{shared_path}/config/sidekiq.yml #{latest_release}/config/sidekiq.yml"
   end
 
   desc "Configuring database for project."
@@ -186,9 +164,6 @@ EOF
     rake.migrate
     rake.install
     rake.assets
-    rake.assets_sync
-    sidekiq_configure
-    sidekiq_symlink
     start
   end
 
@@ -200,8 +175,6 @@ EOF
     rake.migrate
     rake.install
     rake.assets
-    rake.assets_sync
-    sidekiq_symlink
     restart
   end
 end

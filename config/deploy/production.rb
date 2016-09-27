@@ -10,3 +10,7 @@ set :sidekiq_pid, File.join(shared_path, 'pids', 'sidekiq.pid')
 #Database settings
 set :database_adapter, "postgresql"
 set :database_pool, "25"
+set :database_dbname, "trannylogger_prod"
+set :database_host, "127.0.0.1"
+set :database_user, "postgres"
+set :database_pass, ""
