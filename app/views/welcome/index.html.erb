@@ -1,23 +1,21 @@
-<body id="bg-main">
-<div class="container-fluid">
-	<div class="row" style="margin-top:100px">
-		<div class="col-md-12 center center-content">
-			<%= image_tag "logo-big.png", style:"max-width:500px" %>
-		</div>
-	</div>
-	
-	<div class="container-fluid center-content" style="margin-top:100px">
-	<div class="row">
+<div id="particles-js" class="backgroundcanvas">
+	<%= javascript_include_tag 'particles', 'app'%>
 		
-		<div class="col-md-4">
-			<div>
-			<%= link_to projects_path do %>
-            <div class="btn btn-lg btn-primary">Get Started</div>
-            <% end %>
-			</div>	
-		</div>
+		<div class="row centeritem">
+			<div class="col-md-12 center center-content">
+				<%= image_tag "logo-big.png", style:"max-width:500px" %>
 		
+				<div class="row">
+				<div class="col-md-4">
+					<div>
+				<%= link_to projects_path do %>
+	            <div class="btn btn-lg btn-primary">Get Started</div>
+	            <% end %>
+					</div>	
+				</div>
+			
+			</div>
+		</div>
 </div>
 
 
-</body>

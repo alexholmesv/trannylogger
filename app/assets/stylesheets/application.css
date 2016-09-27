@@ -140,3 +140,13 @@
  div.container {
         width: 90%;
     }
+
+.backgroundcanvas {
+  position: absolute;
+}
+
+.centeritem {
+  position: relative;
+  margin-top:100px;
+  margin-left: -565px;
+}
