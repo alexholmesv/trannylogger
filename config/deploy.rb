@@ -30,6 +30,8 @@ set :keep_releases, 10
 # Git Tags
 set :tagging_format, ':rails_env_:release'
 
+set :default_shell, '/bin/bash -l'
+
 # Slack Notification options
 # Don't forget to uncomment the hooks at the end of this file
 #
@@ -160,10 +162,11 @@ EOF
     db_configure
     db_symlink
     dir_symlink
-    db_setup
+    #db_setup
     rake.migrate
-    rake.install
+    #rake.install
     rake.assets
+    create_symlink
     start
   end
 
@@ -173,8 +176,8 @@ EOF
     db_symlink
     dir_symlink
     rake.migrate
-    rake.install
     rake.assets
+    create_symlink
     restart
   end
 end
@@ -212,7 +215,7 @@ end
 
 before "deploy:cold", "deploy:setup"
 
-after "deploy:sidekiq_symlink", "deploy:create_symlink"
+#after "deploy:", "deploy:create_symlink"
 after "deploy", "deploy:auto_cleanup"
 
 # Slack Notification hooks

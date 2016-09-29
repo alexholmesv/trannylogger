@@ -1,4 +1,4 @@
-server 'app_server:22', :app, :db, primary: true
+server '54.68.28.119:22', :app, :db, primary: true
 #server 'db_server:22', :db
 
 #Application settings
@@ -12,5 +12,5 @@ set :database_adapter, "postgresql"
 set :database_pool, "25"
 set :database_dbname, "trannylogger_prod"
 set :database_host, "127.0.0.1"
-set :database_user, "postgres"
-set :database_pass, ""
+set :database_user, "deploy"
+set :database_pass, "KuVMtgcBCbE6aG6jPpPmCCbz"
