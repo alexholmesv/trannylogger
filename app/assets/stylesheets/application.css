@@ -34,7 +34,7 @@
 	// no-repeat center center fixed;
 	background-size: cover;
 	min-width: 50%;
-	min-height 50%;
+	min-height: 50%;
 }
 
 .center {
@@ -96,7 +96,7 @@
 .card-list {
   margin-top: 20px;
   margin-bottom: 20px;
-  margin-left: 
+  /*margin-left: */
   border-left: 8px solid #3572B0;
   border-radius: 4px;
   background-color: #F5F5F5;
