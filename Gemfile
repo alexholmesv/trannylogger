@@ -1,7 +1,5 @@
 source 'https://rubygems.org'
 
-<<<<<<< HEAD
-
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.3'
 # Use sqlite3 as the database for Active Record
@@ -58,7 +56,7 @@ group :development, :test do
 end
 
 ruby "2.2.1"
-=======
+
 gem 'capistrano',  '~> 2.15'
 gem 'rvm-capistrano'
 gem "capistrano-sidekiq"
@@ -68,4 +66,4 @@ gem 'capistrano-tagging'
 # Uncomment the following line to notify a slack channel
 # that the application is being deployed
 # gem 'capistrano-slack-notify'
->>>>>>> 4ae5ed0f472e4d6d91fb9ab9edcd83315d442eb7
+
