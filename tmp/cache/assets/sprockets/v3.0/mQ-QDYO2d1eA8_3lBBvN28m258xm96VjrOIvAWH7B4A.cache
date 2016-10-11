@@ -1,0 +1,7 @@
+I"e(function() {
+  jQuery(function() {
+    return $('#clients').dataTable();
+  });
+
+}).call(this);
+:ET

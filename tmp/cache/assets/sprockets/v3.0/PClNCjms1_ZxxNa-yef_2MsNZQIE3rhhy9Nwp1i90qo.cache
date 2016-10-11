@@ -1,0 +1,8 @@
+I"…(function() {
+  jQuery(function() {
+    $('#projects').dataTable();
+    return $('#clientsTable').dataTable();
+  });
+
+}).call(this);
+:ET

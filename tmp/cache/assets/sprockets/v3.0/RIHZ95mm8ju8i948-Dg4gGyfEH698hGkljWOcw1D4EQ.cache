@@ -1,0 +1,7 @@
+I"f(function() {
+  jQuery(function() {
+    return $('#projects').dataTable();
+  });
+
+}).call(this);
+:ET
