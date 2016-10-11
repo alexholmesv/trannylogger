@@ -55,8 +55,6 @@ group :development, :test do
   gem 'spring'
 end
 
-ruby "2.2.1"
-
 gem 'capistrano',  '~> 2.15'
 gem 'rvm-capistrano'
 gem "capistrano-sidekiq"
