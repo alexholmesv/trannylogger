@@ -18,6 +18,7 @@ class ProjectsController < ApplicationController
   # GET /projects/new
   def new
     @project = Project.new
+    # @project.translator_invoices.build 
     
   end
 
@@ -81,6 +82,22 @@ class ProjectsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def project_params
-      params.require(:project).permit(:client_id, :name, :date_received, :words, :rate, :extras, :total, :invoice_number, :sent, :translator_id, :customer_payment, :translator_payment, :comments)
+      params.require(:project).permit(
+        :client_id, 
+        :name, 
+        :date_received, 
+        :words, 
+        :rate, 
+        :extras, 
+        :total, 
+        :invoice_number, 
+        :sent, 
+        :translator_id, 
+        :customer_payment, 
+        :translator_payment, 
+        :comments, 
+        :translator_invoice,
+        translator_invoices_attributes: [:id, :invoice_number, :_destroy])
+
     end
 end

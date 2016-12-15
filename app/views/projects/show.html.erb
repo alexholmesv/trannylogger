@@ -1,5 +1,6 @@
 <p id="notice"><%= notice %></p>
 
+<div class="container">
 <p>
   <strong>Client:</strong>
   <%= @project.client.name %>
@@ -36,6 +37,16 @@
 </p>
 
 <p>
+  <strong>Client invoice</strong>
+  <%= @project.invoice_number %>
+</p>
+
+<p>
+  <strong>Translator invoice</strong>
+  <%= @project.translator_invoice %>
+</p>
+
+<p>
   <strong>Comments:</strong>
   <%= @project.comments %>
 </p>
@@ -45,3 +56,5 @@
 <%= link_to 'Back', projects_path %>
 
 <%= link_to "Go back", :back, class:"btn btn-primary" %>
+
+</div>

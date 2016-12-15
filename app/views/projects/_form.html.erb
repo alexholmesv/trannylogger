@@ -1,5 +1,5 @@
 
-<%= form_for(@project) do |f| %>
+<%= simple_form_for @project do |f| %>
   <% if @project.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@project.errors.count, "error") %> prohibited this project from being saved:</h2>
@@ -86,6 +86,23 @@
       <%= f.text_field :invoice_number, class:"form-control", placeholder:"Leave blank if not invoiced to client yet" %>
     </div>
 
+<div class="field">
+    <h3>Translator Invoice Number</h3>
+
+    <%= f.text_field :translator_invoice, class:"form-control", placeholder:"Leave blank if not invoiced by translator yet" %>
+
+    <div id="translator_invoices">
+    <%= f.simple_fields_for :translator_invoices do |t| %>
+    <%= render 'translator_invoice_fields', f: t %>
+      <div class="links">
+      <%= link_to_add_association 'add translator_invoices', f, :translator_invoices  %>
+      <% end %>
+      </div>
+    </div>
+  </div>
+
+
+<div class="card">
     <div class="field">
       <h3>Has this project been paid by the client?</h3>
       <%= f.check_box :customer_payment, class:"big-checkbox" %>
@@ -99,9 +116,8 @@
       <h3>Comments</h3>
       <%= f.text_area :comments %>
     </div>
-    <div>
   </div>
-  </div>           
+
     <div class="actions card-transparent">
           <span>  <%= f.submit class:"btn btn-primary pull-right" %> </span>
               <%= link_to projects_path do %>

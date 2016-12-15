@@ -23,7 +23,8 @@
       <th class="h5 tablefont">Sent to client?</th>
       <th class="h5 tablefont">Paid by client?</th>
       <th class="h5 tablefont">Paid translator?</th>
-      <th class="h5 tablefont">Invoice No.</th>
+      <th class="h5 tablefont">Client Invoice</th>
+      <th class="h5 tablefont">Translator Invoice</th>
       <th class="h5 tablefont">Show</th>
       <th class="h5 tablefont">Edit</th>
       <th class="h5 tablefont">Delete</th>
@@ -49,6 +50,13 @@
         <td> 
           <% if !project.invoice_number.nil? %>
             <%= project.invoice_number %>
+          <% else %>
+            <span class="h5"><%= "No invoice sent" %></span>
+           <% end  %>           
+        </td>
+        <td> 
+          <% if !project.translator_invoice.nil? %>
+            <%= project.translator_invoice %>
           <% else %>
             <span class="h5"><%= "No invoice sent" %></span>
            <% end  %>           
