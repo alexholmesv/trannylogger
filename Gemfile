@@ -55,11 +55,11 @@ group :development, :test do
   gem 'spring'
 end
 
-gem 'rvm-capistrano', require: false
-gem 'capistrano',  '~> 2.15'
-gem "capistrano-sidekiq"
-gem 'to_boolean'
-gem 'capistrano-tagging'
+# gem 'rvm-capistrano', require: false
+# gem 'capistrano',  '~> 2.15'
+# gem "capistrano-sidekiq"
+# gem 'to_boolean'
+# gem 'capistrano-tagging'
 
 # Uncomment the following line to notify a slack channel
 # that the application is being deployed
