@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161201172327) do
+ActiveRecord::Schema.define(version: 20161215160818) do
 
   create_table "clients", force: :cascade do |t|
     t.string   "name"
@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 20161201172327) do
     t.boolean  "customer_payment"
     t.boolean  "translator_payment"
     t.text     "comments"
+    t.integer  "translator_invoice"
   end
 
   add_index "projects", ["client_id"], name: "index_projects_on_client_id"
