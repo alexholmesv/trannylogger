@@ -1,6 +1,7 @@
 class Project < ActiveRecord::Base
   belongs_to :client
   belongs_to :translator
+  belongs_to :user
 	before_save :set_total
 	has_many :translator_invoices
 	accepts_nested_attributes_for :translator_invoices
